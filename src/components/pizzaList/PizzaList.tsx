@@ -1,13 +1,16 @@
-import { PizzaBlock, PizzaSkeleton } from "../";
+import React from "react";
+import { Link } from "react-router-dom";
+import {PizzaBlock, PizzaSkeleton} from "../";
 
+import PizzasProps from "./pizzaListTypes";
+import { PizzasTypes } from "./pizzaListTypes";
 
-const PizzaList = ({ pizzas, isLoading, category }) => {
+export const PizzaList: React.FC<PizzasProps> = ({ pizzas, status }) => {
 
-    const renderElements = (arr) =>
-        arr.map((item, index) => isLoading ? <PizzaSkeleton key={`skeleton_pizza_${index}`} /> : <PizzaBlock key={item.title} {...item} />);
+    const renderElements = (arr: undefined[] | {}[]) =>
+        arr.map((item: PizzasTypes, index: number) => status === "loaded" ? <Link to={`/pizza/${item.id}`} key={item.title}><PizzaBlock {...item} /></Link> : <PizzaSkeleton key={`skeleton_pizza_${index}`} />);
 
-    const elements = isLoading ? renderElements([...Array(8)]) : category ? renderElements(pizzas.filter(item => Number(item.category) === Number(category)))
-        : renderElements(pizzas);
+    const elements = status === "loaded" ? renderElements(pizzas) : renderElements([...Array(8)]);
 
     // II. способ сортировки, если сервер не будет сортировать, то можно и на строне клиента сделать сортировку, то нужно тогда пробросить sorting из Home
     /*     const sortedPizzas = () => {
@@ -25,7 +28,7 @@ const PizzaList = ({ pizzas, isLoading, category }) => {
                     return pizzas;
             }
         }
-    
+     
         const elements = isLoading ? renderElements([...Array(8)]) : category ? renderElements(sortedPizzas().filter(item => Number(item.category) === Number(category))) : renderElements(sortedPizzas()); */
 
 
@@ -37,5 +40,3 @@ const PizzaList = ({ pizzas, isLoading, category }) => {
         </div>
     )
 }
-
-export default PizzaList;
